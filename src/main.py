@@ -1,5 +1,3 @@
-import json
-
 from os import getenv
 from os import listdir
 from os import path
