@@ -16,10 +16,7 @@ Nana = Client(delete_unused_application_cmds=True, intents=Intents.ALL, activity
 @listen()
 async def on_startup():
     system("clear")
-    print(f"This should be implement with logger")
-
-
-print("Starting...")
+    print("バナナイス！")
 
 root: str = rf"{path.dirname(path.realpath(__file__))}"
 
