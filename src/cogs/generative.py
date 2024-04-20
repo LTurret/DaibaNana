@@ -34,6 +34,10 @@ class generative(Extension):
             root: str = rf"{path.dirname(path.realpath(__file__))}"
             history_log: str = rf"{root}{sep}..{sep}history.json"
 
+            # 對話初始化
+            genai.configure(api_key=getenv("GEMINI_TOKEN"))
+            model: GenerativeModel = GenerativeModel("gemini-1.5-pro-latest")
+
             if not path.isfile(history_log):
                 file: bytes = open(history_log, "w")
                 file.write('{"history":[]}')
@@ -43,10 +47,6 @@ class generative(Extension):
             with open(history_log, "r") as file:
                 conversation: list[dict] = json.load(file)
                 self.chat: ChatSession = model.start_chat(history=conversation["history"])
-
-            # 對話初始化
-            genai.configure(api_key=getenv("GEMINI_TOKEN"))
-            model: GenerativeModel = GenerativeModel("gemini-1.5-pro-latest")
 
             if not len(conversation["history"]):
                 await self.message.edit(content="初始化🍌✨")
