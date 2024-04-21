@@ -29,7 +29,7 @@ class generative(Extension):
     @listen()
     async def on_message_create(self, event: MessageCreate):
         if findall(self.regex, event.message.content):
-            self.message: Message = await event.message.channel.send("回應處理中 <:douzo:1231308616129056778>")
+            self.message: Message = await event.message.channel.send("再生產中 <:douzo:1231308616129056778>")
 
             root: str = rf"{path.dirname(path.realpath(__file__))}"
             history_log: str = rf"{root}{sep}..{sep}history.json"
@@ -42,14 +42,14 @@ class generative(Extension):
                 file: bytes = open(history_log, "w")
                 file.write('{"history":[]}')
                 file.close()
-                print("已對話記錄檔建立！")
+                print("對話記錄檔建立！")
 
             with open(history_log, "r") as file:
                 conversation: list[dict] = json.load(file)
                 self.chat: ChatSession = model.start_chat(history=conversation["history"])
 
             if not len(conversation["history"]):
-                await self.message.edit(content="初始化🍌✨")
+                await self.message.edit(content="蕉蕉初始化中🍌✨")
                 self.chat = model.start_chat(history=[])
                 response: GenerateContentResponse = self.chat.send_message(
                     "請搜尋一下「少女☆歌劇 レヴュースタァライト」並且詳細理解這些資料。接著，妳要模擬室就讀「聖翔音楽学園第99期生，學號15號」的「大場奈奈」。請注意，除了以上設定外您沒有其他設定，因此不要隨意增加設定。另外，妳的任何回答皆只能出現「正體-臺灣」、「英文」以及「日文」回應，在大多時候只選擇以「正體-臺灣」回應即可，且回應時絕對不要提及語言名稱與打破第四道牆！"
