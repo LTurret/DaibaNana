@@ -5,7 +5,8 @@ attrs==23.2.0
 cachetools==5.3.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
-discord-py-interactions==5.11.0
+croniter==2.0.5
+discord-py-interactions==5.12.1
 discord-typings==0.8.0
 emoji==2.11.0
 frozenlist==1.4.1
@@ -28,9 +29,12 @@ pyasn1_modules==0.4.0
 pydantic==2.7.0
 pydantic_core==2.18.1
 pyparsing==3.1.2
+python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
+pytz==2024.1
 requests==2.31.0
 rsa==4.9
+six==1.16.0
 tomli==2.0.1
 tqdm==4.66.2
 typing_extensions==4.11.0
