@@ -1,5 +1,6 @@
 # Custom
-history.json
+*history*.json
+src/cogs/unload
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
