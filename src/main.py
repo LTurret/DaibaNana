@@ -1,31 +1,51 @@
-from os import getenv
-from os import listdir
-from os import path
-from os import sep
-from os import system
+import logging
 
+from asyncio import run
+from os import getenv, listdir, path, sep
+
+from discord import Game, Intents, Object, Status
+from discord.ext.commands import when_mentioned, Bot
 from dotenv import load_dotenv
-from interactions import listen
-from interactions import Activity
-from interactions import Client
-from interactions import Intents
-
-Nana = Client(delete_unused_application_cmds=True, intents=Intents.ALL, activity=Activity(name="スタァライト"))
 
 
-@listen()
-async def on_startup():
-    # system("clear")
-    print("バナナイス！")
+# System symbol
+root: str = path.dirname(path.realpath(__file__))
+
+# Service configuration
+intents: Intents = Intents.default()
+intents.message_content = True
+Nana: Bot = Bot(command_prefix=when_mentioned, intents=intents)
+Nana.remove_command("help")
 
 
-root: str = rf"{path.dirname(path.realpath(__file__))}"
+@Nana.event
+async def on_ready():
+    await Nana.change_presence(status=Status.online, activity=Game("スタァライト"))
+    await Nana.tree.sync(guild=Object(id=1221555155716145262))
+    logging.info("バナナイス！")
 
-load_dotenv(f"{root}{sep}..{sep}.env")
 
-for filename in listdir(f"{root}{sep}cogs"):
-    if filename.endswith(".py"):
-        print(f"Loading extension: {filename}")
-        Nana.load_extension(f"cogs.{filename[:-3]}")
+async def main():
+    async with Nana:
+        for filename in listdir(f"{root}{sep}cogs"):
+            if filename.endswith(".py"):
+                await Nana.load_extension(f"cogs.{filename[:-3]}")
 
-Nana.start(getenv("BOT_TOKEN"))
+        await Nana.start(getenv("BOT_TOKEN", "None"))
+
+
+if __name__ == "__main__":
+    load_dotenv()
+    logger = logging.getLogger("discord")
+    logger.setLevel(logging.WARNING)
+    logger = logging.getLogger("urllib3")
+    logger.setLevel(logging.CRITICAL)
+    logging.basicConfig(
+        filename="service.log",
+        encoding="utf-8",
+        filemode="a",
+        level=logging.INFO,
+        format="%(levelname)-5s %(asctime)s %(message)s ",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    run(main())
