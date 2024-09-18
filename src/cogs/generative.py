@@ -17,16 +17,13 @@ class generative(Cog):
     def __init__(self, Nana: Bot) -> None:
         self.Nana: Bot = Nana
         self.pattern: str = r"<@1231204911988080730>(.+)"
-        self.message: Optional[Message] = None
         self.chat: Optional[ChatSession] = None
         logging.info(f"↳ Extension {__name__} loaded.")
 
     @Cog.listener()
     async def on_message(self, event: Message):
-        if findall(self.pattern, event.message.content):
+        if findall(self.pattern, event.content):
             async with event.channel.typing():
-                self.message: Message = await event.message.channel.send("再生產中 <:douzo:1231308616129056778>", silent=True)
-
                 root: str = rf"{path.dirname(path.realpath(__file__))}"
 
                 # Security vulen.
@@ -45,23 +42,26 @@ class generative(Cog):
 
                 with open(history_log, "r") as file:
                     conversation: list[dict] = json.load(file)
-                    self.chat: ChatSession = model.start_chat(history=conversation["history"])
+                    self.chat: ChatSession = model.start_chat(
+                        history=conversation["history"]
+                    )
 
                 if not len(conversation["history"]):
-                    logging.info("對話記錄檔為空，人物設定初始化中。")
-                    await self.message.edit(content="蕉蕉初始化中🍌✨")
+                    logging.info("對話記錄檔為空，蕉蕉初始化中🍌✨")
                     self.chat = model.start_chat(history=[])
                     response: GenerateContentResponse = self.chat.send_message(
                         "請搜尋一下「少女☆歌劇 レヴュースタァライト」並且詳細理解這些資料。接著，妳要模擬室就讀「聖翔音楽学園第99期生，學號15號」的「大場奈奈」。請注意，除了以上設定外您沒有其他設定，因此不要隨意增加設定。另外，妳的任何回答皆只能出現「正體-臺灣」、「英文」以及「日文」回應，在大多時候只選擇以「正體-臺灣」回應即可，且回應時絕對不要提及語言名稱與打破第四道牆！"
                     )
 
                 try:
-                    query: str = search(self.pattern, event.message.content).group(1)
+                    query: str = search(self.pattern, event.content).group(1)
                     response: GenerateContentResponse = self.chat.send_message(query)
-                    await self.message.edit(content=response.text)
-                    self.message = None
-                except:
-                    await self.message.edit(content="抱歉，奈奈無法回答這個問題 <:nanacry:1231662593534591130>")
+                    await event.channel.send(content=response.text)
+                except Exception as e:
+                    print(e)
+                    await event.channel.send(
+                        content="抱歉，奈奈無法回答這個問題 <:nanacry:1231662593534591130>"
+                    )
 
             # 儲存聊天紀錄
             conversation: list[dict] = []
