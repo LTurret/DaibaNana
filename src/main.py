@@ -3,8 +3,8 @@ import logging
 from asyncio import run
 from os import getenv, listdir, path, sep
 
-from discord import Game, Intents, Object, Status
-from discord.ext.commands import when_mentioned, Bot
+from discord import Game, Intents, Status
+from discord.ext.commands import Bot
 from dotenv import load_dotenv
 
 
@@ -14,14 +14,14 @@ root: str = path.dirname(path.realpath(__file__))
 # Service configuration
 intents: Intents = Intents.default()
 intents.message_content = True
-Nana: Bot = Bot(command_prefix=when_mentioned, intents=intents)
+Nana: Bot = Bot(command_prefix="🍌", intents=intents)
 Nana.remove_command("help")
 
 
 @Nana.event
 async def on_ready():
     await Nana.change_presence(status=Status.online, activity=Game("スタァライト"))
-    await Nana.tree.sync(guild=Object(id=1221555155716145262))
+    # await Nana.tree.sync(guild=Object(id=1221555155716145262))
     logging.info("バナナイス！")
 
 
